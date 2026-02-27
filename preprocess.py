@@ -17,7 +17,7 @@ def clean_text(text: str) -> str:
     print(f"[clean_text] Original length: {len(text)} chars")
 
     try:
-        # Chuẩn hóa Unicode (NFKC: kết hợp dấu, chuyển full-width sang half-width)
+        # Chuẩn hóa Unicode
         text = unicodedata.normalize('NFKC', text)
 
         # Loại bỏ ký tự đặc biệt thừa, giữ chữ cái, số, dấu câu cơ bản
