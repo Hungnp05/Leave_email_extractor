@@ -32,11 +32,9 @@ async def extract_from_form(request: Request, email_text: str = Form(...)):
         )
 
     try:
-        # Làm sạch text
         cleaned = clean_text(email_text)
         print(f"[API] Cleaned: {cleaned[:100]}...")
 
-        # Predict bằng mô hình đã train
         result = extractor.predict(cleaned)
         print(f"[API] Result: {result}")
 
