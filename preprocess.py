@@ -1,4 +1,3 @@
-# preprocess.py - làm sạch text trước khi đưa vào PhoT5
 import re
 import unicodedata
 
@@ -17,19 +16,14 @@ def clean_text(text: str) -> str:
     print(f"[clean_text] Original length: {len(text)} chars")
 
     try:
-        # Chuẩn hóa Unicode
         text = unicodedata.normalize('NFKC', text)
 
-        # Loại bỏ ký tự đặc biệt thừa, giữ chữ cái, số, dấu câu cơ bản
         text = re.sub(r'[^\w\s.,!?]', '', text)
 
-        # Thay nhiều khoảng trắng bằng một
         text = re.sub(r'\s+', ' ', text)
 
-        # Loại bỏ khoảng trắng đầu cuối
         text = text.strip()
 
-        # Lowercase để đồng nhất
         text = text.lower()
 
         print(f"[clean_text] Cleaned length: {len(text)} chars")
@@ -37,4 +31,4 @@ def clean_text(text: str) -> str:
 
     except Exception as e:
         print(f"[clean_text] ERROR: {str(e)}")
-        return text.strip().lower()  # fallback về input gốc đã lower
+        return text.strip().lower()
