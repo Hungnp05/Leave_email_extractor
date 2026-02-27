@@ -62,6 +62,7 @@ if __name__ == "__main__":
         tokenizer=tokenizer,
     )
     
+    
     print("Starting fine-tune VietAI/vit5-base...")
     trainer.train()
     trainer.save_model("models/vit5_finetuned")
