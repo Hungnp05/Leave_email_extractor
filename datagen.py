@@ -96,7 +96,7 @@ def create_sample(i):
         "leave_periods": []
     }
 
-    # Thêm leave_periods (đơn giản hóa để dễ train)
+    # đơn giản hóa để dễ train
     if "từ" in email_text:
         output["leave_periods"].append({
             "start_date": " ".join(start),
