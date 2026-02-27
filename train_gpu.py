@@ -1,4 +1,3 @@
-# train_gpu.py - fine-tune VietAI/vit5-base trên GPU (đã sửa lỗi import)
 import torch
 from transformers import (
     AutoTokenizer,
@@ -97,7 +96,7 @@ if __name__ == "__main__":
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
         greater_is_better=False,
-        fp16=True,  # GPU dùng fp16 để nhanh và tiết kiệm VRAM
+        fp16=True,
         logging_steps=20,
         report_to="none",
         optim="adamw_torch",
