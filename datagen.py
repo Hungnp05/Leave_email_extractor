@@ -105,7 +105,6 @@ templates_range = [
 ]
 
 # SAMPLE CREATOR
-
 def create_sample(i):
     name = f"{random.choice(ho)} {random.choice(dem)} {random.choice(ten)}"
     emp_id = f"nv{1000+i}"
