@@ -57,9 +57,8 @@ session_map = {
     "cả ngày thứ sáu": "full_day"
 }
 
-
 # DATE GENERATOR
-BASE_DATE = datetime(2025, 1, 1)
+BASE_DATE = datetime(2026, 1, 1)
 
 def random_absolute_date():
     delta = random.randint(0, 365)
@@ -83,13 +82,12 @@ def generate_date_text():
         return format_absolute(date_obj), date_obj.strftime("%d/%m/%Y")
     else:
         text = random_relative_date()
-        return text, text 
+        return text, text
 
 def generate_date_range():
     start = random_absolute_date()
-    end = start + timedelta(days=random.randint(0, 5))
+    end = start + timedelta(days=random.randint(1, 5))
     return start, end
-
 
 # TEMPLATE POOLS
 templates_single = [
@@ -99,24 +97,30 @@ templates_single = [
 ]
 
 templates_range = [
-    "Tôi là {name} ({emp_id}) xin nghỉ phép {session} từ {start} đến {end} vì {reason}.",
-    "{name} mã {emp_id} xin nghỉ {session} từ {start} đến {end} do {reason}.",
-    "Xin nghỉ phép từ {start} đến {end} ({session}), tôi là {name} ({emp_id}) vì {reason}."
+    "Tôi là {name} ({emp_id}) xin nghỉ phép từ {start_session} {start} đến {end_session} {end} vì {reason}.",
+    "{name} mã {emp_id} xin nghỉ từ {start_session} {start} đến {end_session} {end} do {reason}.",
+    "Xin nghỉ phép từ {start_session} {start} đến {end_session} {end}, tôi là {name} ({emp_id}) vì {reason}."
 ]
 
 # SAMPLE CREATOR
 def create_sample(i):
     name = f"{random.choice(ho)} {random.choice(dem)} {random.choice(ten)}"
-    emp_id = f"nv{1000+i}"
+    emp_id = f"nv{1000 + i:04d}"
     reason = " ".join(random.choice(ly_do_list))
-
-    session_tokens = random.choice(sessions)
-    session_text = " ".join(session_tokens)
-    session_label = session_map.get(session_text, "full_day")
 
     use_range = random.random() < 0.5
 
     if use_range:
+        # Range: nghỉ nhiều ngày
+        start_session_tokens = random.choice(sessions)
+        end_session_tokens = random.choice(sessions)
+        start_session_text = " ".join(start_session_tokens)
+        end_session_text = " ".join(end_session_tokens)
+        
+        # Lấy label, fallback về full_day nếu không map được
+        start_session_label = session_map.get(start_session_text, "full_day")
+        end_session_label = session_map.get(end_session_text, "full_day")
+
         start_obj, end_obj = generate_date_range()
         start_text = format_absolute(start_obj)
         end_text = format_absolute(end_obj)
@@ -125,8 +129,9 @@ def create_sample(i):
         email_text = template.format(
             name=name,
             emp_id=emp_id,
-            session=session_text,
+            start_session=start_session_text,
             start=start_text,
+            end_session=end_session_text,
             end=end_text,
             reason=reason
         )
@@ -134,11 +139,16 @@ def create_sample(i):
         leave_obj = {
             "start_date": start_obj.strftime("%d/%m/%Y"),
             "end_date": end_obj.strftime("%d/%m/%Y"),
-            "start_session": session_label,
-            "end_session": session_label
+            "start_session": start_session_label,
+            "end_session": end_session_label
         }
 
     else:
+        # Single day
+        session_tokens = random.choice(sessions)
+        session_text = " ".join(session_tokens)
+        session_label = session_map.get(session_text, "full_day")
+
         date_text, normalized_date = generate_date_text()
 
         template = random.choice(templates_single)
@@ -169,10 +179,13 @@ def create_sample(i):
     }
 
 # GENERATE DATA
-data = [create_sample(i) for i in range(5000)]
+if __name__ == "__main__":
+    random.seed(42)
+    data = [create_sample(i) for i in range(5000)]
 
-with open("data/training_data_phot5.json", "w", encoding="utf-8") as f:
-    json.dump(data, f, ensure_ascii=False, indent=2)
+    with open("data/training_data_phot5.json", "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
-print("Đã tạo dataset sạch và đa dạng.")
-print("Mẫu cuối:", data[-1])
+    print("Đã tạo dataset mới")
+    print("Mẫu cuối cùng:")
+    print(json.dumps(data[-1], ensure_ascii=False, indent=2))
