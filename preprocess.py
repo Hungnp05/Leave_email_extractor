@@ -5,10 +5,12 @@ def clean_text(text: str) -> str:
     """
     Làm sạch văn bản email trước khi đưa vào PhoT5:
     - Chuẩn hóa Unicode
-    - Loại ký tự thừa
+    - Giữ lại ký tự ngày tháng như / và -
+    - Loại ký tự đặc biệt không cần thiết
     - Giảm khoảng trắng
-    - Lowercase (PhoT5 hoạt động tốt với lowercase tiếng Việt)
+    - Lowercase
     """
+
     if text is None or not isinstance(text, str):
         print("[clean_text] Input invalid or None → return empty string")
         return ""
@@ -18,7 +20,7 @@ def clean_text(text: str) -> str:
     try:
         text = unicodedata.normalize('NFKC', text)
 
-        text = re.sub(r'[^\w\s.,!?]', '', text)
+        text = re.sub(r'[^\w\s.,!?/\-:]', '', text)
 
         text = re.sub(r'\s+', ' ', text)
 
