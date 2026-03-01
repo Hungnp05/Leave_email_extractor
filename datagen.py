@@ -181,7 +181,7 @@ def create_sample(i):
 # GENERATE DATA
 if __name__ == "__main__":
     random.seed(42)
-    data = [create_sample(i) for i in range(5000)]
+    data = [create_sample(i) for i in range(6000)]
 
     with open("data/training_data_phot5.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
