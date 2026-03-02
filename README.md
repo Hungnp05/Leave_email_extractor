@@ -18,68 +18,68 @@ Dự án sử dụng mô hình ngôn ngữ tiếng Việt (ViT5) để trích xu
 
 ### Yêu cầu hệ thống
 - Python 3.8–3.11
-- GPU NVIDIA (khuyến nghị) hoặc CPU (chậm hơn)
-- Dung lượng RAM: ≥8GB (GPU) hoặc ≥16GB (CPU)
+- GPU NVIDIA (khuyến nghị) hoặc CPU (chậm hơn)  
+- Dung lượng RAM: ≥8GB (GPU) hoặc ≥16GB (CPU)  
 
 ### Cài đặt
-1. Clone dự án (hoặc mở thư mục hiện có):
-   ```bash
-   git clone <url-repo>
-   cd leave_extractor
+1. Clone dự án (hoặc mở thư mục hiện có):  
+   ```bash  
+   git clone <url-repo>  
+   cd leave_extractor  
 
-Tạo môi trường ảo và kích hoạt:
-python -m venv .venv
-# Windows
-.venv\Scripts\activate
-# Linux/Mac
-source .venv/bin/activate
-Cài đặt các thư viện cần thiết:Bashpip install --upgrade pip
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  # nếu dùng CUDA 12.1
-# hoặc CPU: pip install torch torchvision torchaudio
-pip install transformers datasets accelerate sentencepiece fastapi uvicorn jinja2 python-multipart regex
-(Tùy chọn) Đăng nhập Hugging Face để tải model nhanh hơn:Bashhuggingface-cli login(dán token từ https://huggingface.co/settings/tokens)
+Tạo môi trường ảo và kích hoạt:  
+python -m venv .venv  
+# Windows  
+.venv\Scripts\activate  
+# Linux/Mac  
+source .venv/bin/activate  
+Cài đặt các thư viện cần thiết:Bashpip install --upgrade pip  
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  # nếu dùng CUDA 12.1  
+# hoặc CPU: pip install torch torchvision torchaudio  
+pip install transformers datasets accelerate sentencepiece fastapi uvicorn jinja2 python-multipart regex  
+(Tùy chọn) Đăng nhập Hugging Face để tải model nhanh hơn:Bashhuggingface-cli login(dán token từ https://huggingface.co/settings/tokens)  
 
-Hướng dẫn train model (ViT5 cho trích xuất JSON)
+Hướng dẫn train model (ViT5 cho trích xuất JSON)  
 
-Tạo dữ liệu huấn luyện (nếu chưa có):python datagen.py→ File data/training_data_phot5.json sẽ được tạo (có thể tùy chỉnh số mẫu trong code).
-Train model (dùng GPU):python train_gpu.py
-Train model (dùng CPU):python train.py
+Tạo dữ liệu huấn luyện (nếu chưa có):python datagen.py→ File data/training_data_phot5.json sẽ được tạo (có thể tùy chỉnh số mẫu trong code).  
+Train model (dùng GPU):python train_gpu.py  
+Train model (dùng CPU):python train.py  
 
-Model sẽ lưu vào thư mục models/vit5_finetuned_gpu.
+Model sẽ lưu vào thư mục models/vit5_finetuned_gpu.  
 
-Thời gian train: 1–4 giờ tùy GPU (RTX 3060/4070 khoảng 1–2 giờ).
-Nếu VRAM hết: giảm per_device_train_batch_size=2 trong train_gpu.py.
+Thời gian train: 1–4 giờ tùy GPU (RTX 3060/4070 khoảng 1–2 giờ).  
+Nếu VRAM hết: giảm per_device_train_batch_size=2 trong train_gpu.py.  
 
-(Tùy chọn) Train lại nếu cần cải thiện:
-Xóa thư mục cũ: 
-rmdir /s /q models\vit5_finetuned_gpu
-Chạy lại train_gpu.py.
+(Tùy chọn) Train lại nếu cần cải thiện:  
+Xóa thư mục cũ:  
+rmdir /s /q models\vit5_finetuned_gpu  
+Chạy lại train_gpu.py.  
 
-Hướng dẫn train model (bartpho_summarizer)
-chạy: python datagen_summarizer.py (tạo 5000 mẫu, có thể tùy chỉnh)
-rồi chạy: python train_summarizer.py
-nếu cần train lại:
-rmdir /s /q models\bartpho_summarizer
-chạy lại python train_summarizer.py
+Hướng dẫn train model (bartpho_summarizer)  
+chạy: python datagen_summarizer.py (tạo 5000 mẫu, có thể tùy chỉnh)  
+rồi chạy: python train_summarizer.py  
+nếu cần train lại:  
+rmdir /s /q models\bartpho_summarizer  
+chạy lại python train_summarizer.py  
+ 
+Hướng dẫn chạy ứng dụng  
 
-Hướng dẫn chạy ứng dụng
-
-Chạy server FastAPI:Bashuvicorn main_api:app --reloadhoặcBashpython main_api.py
-Mở trình duyệt:texthttp://127.0.0.1:8000
-Sử dụng:
-Dán toàn bộ nội dung email vào textarea.
-Nhấn Trích xuất.
-Kết quả sẽ hiển thị:
-Thông tin trích xuất (JSON) – dù có lỗi parse vẫn hiển thị raw output.
-Tóm tắt lý do xin nghỉ (ngắn gọn 5–10 từ).
+Chạy server FastAPI:Bashuvicorn main_api:app --reloadhoặcBashpython main_api.py  
+Mở trình duyệt:texthttp://127.0.0.1:8000  
+Sử dụng:  
+Dán toàn bộ nội dung email vào textarea.  
+Nhấn Trích xuất.  
+Kết quả sẽ hiển thị:  
+Thông tin trích xuất (JSON) – dù có lỗi parse vẫn hiển thị raw output.  
+Tóm tắt lý do xin nghỉ (ngắn gọn 5–10 từ).  
 
 
 
-Ví dụ input
-textKính gửi Anh Trưởng phòng,
-Tôi tên là Nguyễn Phú Hùng, mã nhân viên NV001...
-Lý do xin nghỉ là vì con tôi bị ốm nặng...
-Kết quả mong đợi
+Ví dụ input  
+textKính gửi Anh Trưởng phòng,  
+Tôi tên là Nguyễn Phú Hùng, mã nhân viên NV001...  
+Lý do xin nghỉ là vì con tôi bị ốm nặng...  
+Kết quả mong đợi  
 
-Trích xuất: employee_name, employee_id, leave_periods
-Tóm tắt lý do: "con bị ốm nặng" hoặc "chăm sóc con ốm nặng"
+Trích xuất: employee_name, employee_id, leave_periods  
+Tóm tắt lý do: "con bị ốm nặng" hoặc "chăm sóc con ốm nặng"  
