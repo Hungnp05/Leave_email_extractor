@@ -44,7 +44,9 @@ Hướng dẫn train model (ViT5 cho trích xuất JSON)
 Tạo dữ liệu huấn luyện (nếu chưa có):python datagen.py→ File data/training_data_phot5.json sẽ được tạo (có thể tùy chỉnh số mẫu trong code).
 Train model (dùng GPU):python train_gpu.py
 Train model (dùng CPU):python train.py
+
 Model sẽ lưu vào thư mục models/vit5_finetuned_gpu.
+
 Thời gian train: 1–4 giờ tùy GPU (RTX 3060/4070 khoảng 1–2 giờ).
 Nếu VRAM hết: giảm per_device_train_batch_size=2 trong train_gpu.py.
 
@@ -53,6 +55,12 @@ Xóa thư mục cũ:
 rmdir /s /q models\vit5_finetuned_gpu
 Chạy lại train_gpu.py.
 
+Hướng dẫn train model (bartpho_summarizer)
+chạy: python datagen_summarizer.py (tạo 5000 mẫu, có thể tùy chỉnh)
+rồi chạy: python train_summarizer.py
+nếu cần train lại:
+rmdir /s /q models\bartpho_summarizer
+chạy lại python train_summarizer.py
 
 Hướng dẫn chạy ứng dụng
 
