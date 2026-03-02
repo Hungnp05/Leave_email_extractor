@@ -2,107 +2,82 @@ import random
 import json
 from datetime import datetime, timedelta
 
-# DATA POOLS - Tên người
+# DATA POOLS
 ho = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Vũ", "Đỗ", "Bùi", "Đặng", "Phan", "Dương", "Trịnh", "Đinh", "Lý", "Hồ"]
 dem = ["Văn", "Thị", "Minh", "Quang", "Hữu", "Đức", "Gia", "Thanh", "Phú", "Đình", "Ngọc", "Hồng", "Kim"]
 ten = ["Anh", "Bình", "Chi", "Dũng", "Hà", "Huy", "Lan", "Phúc", "Tuấn", "Vy", "Hùng", "Hưng", "Bách", "Mai", "Thảo", "Khang"]
 
-# DATAPOOL LÝ DO
 reason_groups = {
     "child": [
-        "con tôi bị ốm nặng phải chăm sóc tại nhà",
-        "con bị viêm phổi cấp phải nhập viện",
-        "con bị sốt xuất huyết cần theo dõi",
-        "chăm sóc con bị tai nạn giao thông nhẹ",
-        "con bị thủy đậu phải cách ly",
-        "con bị quai bị cần điều trị tại nhà",
-        "con bị viêm ruột thừa phải phẫu thuật",
-        "con bị chấn thương đầu do ngã cần theo dõi"
+        {"short": "con bị ốm nặng phải chăm sóc", "long_suffix": "con tôi bị ốm nặng, sốt cao liên tục từ tối hôm qua và bác sĩ yêu cầu nhập viện theo dõi thêm vài ngày, nên tôi cần trực tiếp đưa cháu vào bệnh viện và chăm sóc trong thời gian điều trị. Gia đình hiện không có người thay thế nên tôi buộc phải xin nghỉ để xử lý việc này."},
+        {"short": "con bị viêm phổi cấp phải nhập viện", "long_suffix": "con trai/con gái tôi bị viêm phổi cấp, phải nhập viện theo dõi và truyền dịch, cần tôi ở bên chăm sóc liên tục vì cháu còn nhỏ và rất sợ."},
+        {"short": "con bị sốt xuất huyết cần theo dõi", "long_suffix": "con tôi bị sốt xuất huyết, bệnh diễn biến phức tạp hơn dự kiến, tôi cần nghỉ để đưa cháu đi khám chuyên khoa và theo dõi hàng ngày."},
+        {"short": "chăm sóc con bị tai nạn nhẹ", "long_suffix": "cháu nội/ngoại tôi bị tai nạn nhẹ, bố mẹ cháu đi công tác xa, tôi phải nghỉ để chăm sóc và đưa đi viện."},
+        {"short": "con bị thủy đậu phải cách ly", "long_suffix": "con tôi bị thủy đậu, cần tôi nghỉ để đưa đi khám bác sĩ nhi khoa và theo dõi tại nhà."},
+        {"short": "con bị quai bị cần điều trị", "long_suffix": "con tôi bị quai bị, phải nghỉ học và ở nhà điều trị, tôi cần nghỉ để chăm sóc và học online cho cháu."},
+        {"short": "con bị viêm ruột thừa cần phẫu thuật", "long_suffix": "con tôi bị viêm ruột thừa, bác sĩ yêu cầu phẫu thuật nhỏ, tôi phải nghỉ để đưa đi viện và chăm sóc hậu phẫu."},
+        {"short": "con bị chấn thương đầu do ngã", "long_suffix": "con tôi bị chấn thương đầu do ngã, cần tôi nghỉ để theo dõi và chăm sóc liên tục."}
     ],
     "spouse": [
-        "vợ mang thai tháng cuối cần hỗ trợ",
-        "chăm sóc vợ bị tai nạn giao thông",
-        "vợ bị đau bụng dữ dội phải đi viện",
-        "vợ đang hậu sản cần chăm sóc",
-        "vợ bị viêm họng nặng cần nghỉ",
-        "vợ bị viêm xoang cấp cần theo dõi",
-        "chăm sóc vợ bị viêm khớp nặng",
-        "vợ bị mất ngủ kéo dài cần hỗ trợ"
+        {"short": "vợ mang thai tháng cuối cần hỗ trợ", "long_suffix": "vợ tôi đang mang thai tháng cuối, có dấu hiệu chuyển dạ sớm, cần tôi ở nhà hỗ trợ và đưa đi viện khẩn cấp nếu cần."},
+        {"short": "chăm sóc vợ bị tai nạn giao thông", "long_suffix": "vợ tôi bị tai nạn giao thông, chấn thương chân phải, tôi cần nghỉ để chăm sóc và đưa đi tái khám."},
+        {"short": "vợ bị đau bụng dữ dội phải đi viện", "long_suffix": "vợ tôi bị đau bụng dữ dội, đang nằm viện điều trị, tôi cần thay phiên chăm sóc vì không có người thân khác hỗ trợ."},
+        {"short": "vợ đang hậu sản cần chăm sóc", "long_suffix": "vợ tôi đang trong giai đoạn hậu sản, cần tôi nghỉ để hỗ trợ chăm sóc con và việc nhà."},
+        {"short": "vợ bị viêm họng nặng cần nghỉ", "long_suffix": "vợ tôi bị viêm họng nặng, sức khỏe yếu, tôi cần nghỉ để chăm sóc và lo thuốc thang."},
+        {"short": "vợ bị viêm xoang cấp cần theo dõi", "long_suffix": "vợ tôi bị viêm xoang cấp, cần tôi nghỉ để đưa đi viện khám định kỳ và theo dõi."},
+        {"short": "chăm sóc vợ bị viêm khớp nặng", "long_suffix": "vợ tôi bị viêm khớp nặng, phải phẫu thuật, cần tôi nghỉ để chăm sóc hậu phẫu và hỗ trợ sinh hoạt."},
+        {"short": "vợ bị mất ngủ kéo dài cần hỗ trợ", "long_suffix": "vợ tôi bị mất ngủ kéo dài, cần tôi nghỉ để chăm sóc và theo dõi sức khỏe."}
     ],
     "elder": [
-        "bố bị tai biến cần chăm sóc",
-        "mẹ bị đột quỵ phải nhập viện",
-        "ông bà bị gãy xương do té ngã",
-        "chăm sóc bố mẹ bị huyết áp cao",
-        "người thân lớn tuổi bị suy tim",
-        "bố mẹ bị suy thận mãn cần theo dõi",
-        "chăm sóc ông bà bị Parkinson",
-        "người thân bị Alzheimer giai đoạn đầu"
+        {"short": "bố bị tai biến cần chăm sóc", "long_suffix": "bố tôi bị tai biến mạch máu não đột ngột, đang nằm viện cấp cứu, tôi cần về quê chăm sóc và hỗ trợ gia đình trong vài ngày."},
+        {"short": "mẹ bị đột quỵ phải nhập viện", "long_suffix": "mẹ tôi bị đột quỵ, cần tôi nghỉ để đưa đi viện khám chuyên khoa và theo dõi."},
+        {"short": "ông bà bị gãy xương do té ngã", "long_suffix": "ông/bà tôi bị gãy xương do té ngã, tuổi cao sức yếu, cần tôi về quê chăm sóc và lo thuốc men trong thời gian này."},
+        {"short": "chăm sóc bố mẹ bị huyết áp cao", "long_suffix": "bố mẹ vợ/chồng bị huyết áp cao, cần tôi nghỉ để thay phiên chăm sóc vì con cái bận công việc."},
+        {"short": "người thân lớn tuổi bị suy tim", "long_suffix": "người thân lớn tuổi bị suy tim, không có ai chăm sóc, tôi phải nghỉ để lo viện phí và thuốc thang."},
+        {"short": "bố mẹ bị suy thận mãn cần theo dõi", "long_suffix": "bố mẹ tôi bị suy thận mãn, cần tôi nghỉ để chăm sóc tại nhà và theo dõi sức khỏe."},
+        {"short": "chăm sóc ông bà bị Parkinson", "long_suffix": "ông bà tôi bị Parkinson, cần tôi nghỉ để hỗ trợ sinh hoạt và lo thuốc men hàng ngày."},
+        {"short": "người thân bị Alzheimer giai đoạn đầu", "long_suffix": "người thân bị Alzheimer giai đoạn đầu, cần tôi nghỉ để lo hậu sự và chăm sóc."}
     ],
     "self": [
-        "tôi bị tai nạn giao thông nhẹ",
-        "tôi bị chấn thương chân cần nghỉ",
-        "tôi bị đau lưng cấp phải điều trị",
-        "tôi bị viêm họng nặng",
-        "tôi bị mất ngủ kéo dài cần nghỉ ngơi",
-        "tôi bị đau dạ dày cấp phải nghỉ",
-        "tôi bị viêm khớp cần điều trị",
-        "tôi bị viêm xoang cấp cần nghỉ"
+        {"short": "tôi bị tai nạn giao thông nhẹ", "long_suffix": ", chấn thương chân phải, phải nghỉ ngơi và điều trị tại nhà theo chỉ định của bác sĩ."},
+        {"short": "tôi bị chấn thương chân cần nghỉ", "long_suffix": ", bác sĩ khuyên phải nghỉ ngơi tuyệt đối ít nhất 3 ngày để tránh biến chứng."},
+        {"short": "tôi bị đau lưng cấp phải điều trị", "long_suffix": ", sức khỏe yếu, cần nghỉ để điều trị và phục hồi hoàn toàn."},
+        {"short": "tôi bị viêm họng nặng", "long_suffix": ", ảnh hưởng nghiêm trọng đến công việc, bác sĩ yêu cầu nghỉ phép để theo dõi."},
+        {"short": "tôi bị mất ngủ kéo dài cần nghỉ ngơi", "long_suffix": ", cần nghỉ để đi khám chuyên khoa và điều trị theo phác đồ."},
+        {"short": "tôi bị viêm xoang cấp cần nghỉ", "long_suffix": ", cần nghỉ để cách ly và theo dõi sức khỏe tại nhà."}
     ],
     "family": [
-        "việc gia đình đám tang",
-        "về quê lo hậu sự người thân",
-        "gia đình có đám cưới đột xuất",
-        "nhà có chuyện đột xuất cần hỗ trợ",
-        "gia đình bị lũ lụt cần xử lý",
-        "gia đình có đám hỏi con trai",
-        "gia đình có đám giỗ lớn",
-        "gia đình bị cháy nhà cần sắp xếp"
+        {"short": "việc gia đình đám tang", "long_suffix": ", tôi cần về quê lo hậu sự và hỗ trợ gia đình trong vài ngày."},
+        {"short": "về quê lo hậu sự người thân", "long_suffix": ", cần tôi nghỉ để hỗ trợ lo lắng và sắp xếp mọi việc."},
+        {"short": "gia đình có đám cưới đột xuất", "long_suffix": ", cần tôi nghỉ để lo chuẩn bị và đón khách."},
+        {"short": "nhà có chuyện đột xuất cần hỗ trợ", "long_suffix": ", cần tôi nghỉ để xử lý và sắp xếp chỗ ở tạm thời."},
+        {"short": "gia đình bị lũ lụt cần xử lý", "long_suffix": ", cần tôi nghỉ để xử lý và sắp xếp chỗ ở tạm thời."},
+        {"short": "gia đình có đám hỏi con trai", "long_suffix": ", cần tôi nghỉ để hỗ trợ chuẩn bị và tổ chức."},
+        {"short": "gia đình có đám giỗ lớn", "long_suffix": ", cần tôi nghỉ để về quê lo lễ và hỗ trợ người thân."}
     ],
     "work": [
-        "đi công tác khẩn cấp",
-        "công ty cử đi đào tạo đột xuất",
-        "chuyển công tác chi nhánh mới",
-        "tham gia họp quan trọng ở xa",
-        "đi học tập huấn chuyên môn",
-        "tham gia kỳ thi quan trọng",
-        "đi thi bằng lái xe",
-        "tham gia lễ hội gia đình đột xuất"
+        {"short": "đi công tác khẩn cấp", "long_suffix": " đột xuất vì công việc, không thể sắp xếp người thay thế trong thời gian này."},
+        {"short": "công ty cử đi đào tạo đột xuất", "long_suffix": " {days} ngày, tôi cần xin nghỉ phép để hoàn thành nhiệm vụ."},
+        {"short": "chuyển công tác chi nhánh mới", "long_suffix": ", cần nghỉ để sắp xếp chuyển nhà và gia đình."},
+        {"short": "tham gia họp quan trọng ở xa", "long_suffix": ", cần xin nghỉ phép để tham dự."},
+        {"short": "đi học tập huấn chuyên môn", "long_suffix": " ở xa, tôi cần xin nghỉ phép."},
+        {"short": "tham gia kỳ thi quan trọng", "long_suffix": " {days} ngày, cần xin nghỉ phép để tập trung."},
+        {"short": "đi thi bằng lái xe", "long_suffix": ", cần xin nghỉ phép để tham gia kỳ thi."},
+        {"short": "tham gia lễ hội gia đình đột xuất", "long_suffix": ", cần nghỉ để hỗ trợ gia đình."}
     ]
 }
 
 def get_reason():
     group = random.choice(list(reason_groups.keys()))
-    short_reason = random.choice(reason_groups[group])
-    
-    long_templates = {
-        "child": f"con tôi bị {short_reason.split(' ')[-2]} {short_reason.split(' ')[-1]}, cần tôi nghỉ để chăm sóc và theo dõi tại nhà/viện.",
-        "spouse": f"vợ/chồng tôi bị {short_reason.split(' ')[-2]} {short_reason.split(' ')[-1]}, cần tôi nghỉ để hỗ trợ và chăm sóc.",
-        "elder": f"bố/mẹ tôi bị {short_reason.split(' ')[-2]} {short_reason.split(' ')[-1]}, cần tôi nghỉ để chăm sóc và lo viện phí.",
-        "self": f"tôi bị {short_reason.split(' ')[-2]} {short_reason.split(' ')[-1]}, bác sĩ khuyên nghỉ ngơi và điều trị.",
-        "family": f"nhà có {short_reason.split(' ')[-1]}, cần tôi nghỉ để lo hậu sự và hỗ trợ gia đình.",
-        "work": f"tôi phải {short_reason}, không thể sắp xếp người thay thế trong thời gian này."
-    }
-    long_reason = long_templates[group]
-
+    pair = random.choice(reason_groups[group])
+    short_reason = pair["short"]
+    long_suffix = pair["long_suffix"]
+    if "{days}" in long_suffix:
+        long_suffix = long_suffix.format(days=random.randint(3, 5))
+    long_reason = long_suffix
     return long_reason, short_reason
 
-relative_dates = [
-    ["hôm", "nay"],
-    ["ngày", "mai"],
-    ["ngày", "kia"],
-    ["hôm", "qua"],
-    ["cuối", "tuần", "này"],
-    ["đầu", "tuần", "sau"],
-    ["thứ", "hai", "tuần", "tới"],
-    ["thứ", "ba", "tuần", "sau"],
-    ["thứ", "tư", "tuần", "này"],
-    ["thứ", "năm", "tuần", "tới"],
-    ["thứ", "sáu", "tuần", "này"],
-    ["cuối", "tháng", "này"],
-    ["đầu", "tháng", "sau"]
-]
-
+# SESSIONS
 sessions = [
     ["sáng"],
     ["chiều"],
@@ -120,6 +95,22 @@ session_map = {
     "chiều mai": "afternoon",
     "cả ngày thứ sáu": "full_day"
 }
+
+relative_dates = [
+    ["hôm", "nay"],
+    ["ngày", "mai"],
+    ["ngày", "kia"],
+    ["hôm", "qua"],
+    ["cuối", "tuần", "này"],
+    ["đầu", "tuần", "sau"],
+    ["thứ", "hai", "tuần", "tới"],
+    ["thứ", "ba", "tuần", "sau"],
+    ["thứ", "tư", "tuần", "này"],
+    ["thứ", "năm", "tuần", "tới"],
+    ["thứ", "sáu", "tuần", "này"],
+    ["cuối", "tháng", "này"],
+    ["đầu", "tháng", "sau"]
+]
 
 # DATE GENERATOR
 BASE_DATE = datetime(2026, 1, 1)
@@ -249,6 +240,6 @@ if __name__ == "__main__":
     with open("data/training_data_phot5.json", "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
 
-    print("Đã tạo dataset mới với lý do đa dạng và có field reason")
+    print("Đã tạo dataset mới với lý do đa dạng và đồng bộ")
     print("Mẫu cuối cùng:")
     print(json.dumps(data[-1], ensure_ascii=False, indent=2))
