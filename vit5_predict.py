@@ -56,14 +56,14 @@ class LeaveExtractor:
                 return {"error": "Invalid JSON format", "raw_output": result}
 
             # Post-process nâng cao
-            # 1. Tách mã nhân viên (tìm "nv" + số, loại bỏ khoảng trắng)
+            # 1. Tách mã nhân viên
             if "employee_id" in parsed:
                 eid = parsed["employee_id"]
                 match = re.search(r'nv\s*(\d+)', eid, re.IGNORECASE)
                 if match:
                     parsed["employee_id"] = f"nv{match.group(1)}"
 
-            # 2. Chuẩn hóa start_date và end_date về dd/mm (xử lý "232" → "23/2")
+            # 2. Chuẩn hóa start_date và end_date về dd/mm
             for period in parsed.get("leave_periods", []):
                 for key in ["start_date", "end_date"]:
                     val = period.get(key, "")
