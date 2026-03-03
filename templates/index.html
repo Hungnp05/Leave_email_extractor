@@ -37,17 +37,6 @@
             <pre>{{ result | tojson(indent=4) }}</pre>
         {% endif %}
     </div>
-
-    {% if summarized_reasons %}
-    <div class="summary-box">
-        <h3>Tóm tắt lý do xin nghỉ:</h3>
-        <ul>
-        {% for summary in summarized_reasons %}
-            <li>{{ summary }}</li>
-        {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
     {% endif %}
 </body>
 </html>
