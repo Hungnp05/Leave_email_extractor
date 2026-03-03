@@ -7,6 +7,7 @@ ho = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Vũ", "Đỗ", "Bùi", "
 dem = ["Văn", "Thị", "Minh", "Quang", "Hữu", "Đức", "Gia", "Thanh", "Phú", "Đình", "Ngọc", "Hồng", "Kim"]
 ten = ["Anh", "Bình", "Chi", "Dũng", "Hà", "Huy", "Lan", "Phúc", "Tuấn", "Vy", "Hùng", "Hưng", "Bách", "Mai", "Thảo", "Khang"]
 
+# DATAPOOL LÝ DO
 reason_groups = {
     "child": [
         {"short": "con bị ốm nặng phải chăm sóc", "long_suffix": "con tôi bị ốm nặng, sốt cao liên tục từ tối hôm qua và bác sĩ yêu cầu nhập viện theo dõi thêm vài ngày, nên tôi cần trực tiếp đưa cháu vào bệnh viện và chăm sóc trong thời gian điều trị. Gia đình hiện không có người thay thế nên tôi buộc phải xin nghỉ để xử lý việc này."},
@@ -161,7 +162,6 @@ templates_range = [
 def create_sample(i):
     name = f"{random.choice(ho)} {random.choice(dem)} {random.choice(ten)}"
     emp_id = f"nv{1000 + i:04d}"
-
     long_reason, short_reason = get_reason()
 
     use_range = random.random() < 0.5
