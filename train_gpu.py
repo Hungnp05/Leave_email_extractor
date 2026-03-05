@@ -85,13 +85,13 @@ if __name__ == "__main__":
     training_args = Seq2SeqTrainingArguments(
         output_dir="models/vit5_finetuned_gpu",
         evaluation_strategy="epoch",
-        learning_rate=1e-4,
+        learning_rate=3e-5,
         per_device_train_batch_size=4,
         per_device_eval_batch_size=4,
         gradient_accumulation_steps=2,
-        num_train_epochs=8,
+        num_train_epochs=6,
         weight_decay=0.01,
-        warmup_steps=500,
+        warmup_steps=200,
         save_strategy="epoch",
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         report_to="none",
         optim="adamw_torch",
         dataloader_num_workers=2,
-        predict_with_generate=True,
+        predict_with_generate=False,
         push_to_hub=False,
     )
 
