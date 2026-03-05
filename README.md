@@ -1,6 +1,6 @@
 # Leave Extractor - Trích xuất thông tin nghỉ phép từ email
 
-Dự án sử dụng mô hình ngôn ngữ tiếng Việt (ViT5) để trích xuất thông tin nghỉ phép từ email tiếng Việt (tên nhân viên, mã NV, khoảng thời gian nghỉ, ca nghỉ). Ngoài ra, tích hợp mô hình tóm tắt lý do xin nghỉ phép bằng BARTpho (vinai/bartpho-syllable).
+Dự án sử dụng mô hình ngôn ngữ tiếng Việt (ViT5) để trích xuất thông tin nghỉ phép từ email tiếng Việt (tên nhân viên, mã NV, khoảng thời gian nghỉ, ca nghỉ, lý do)
 
 ### Tính năng chính
 - Trích xuất tự động: employee_name, employee_id, leave_periods (start_date, end_date, start_session, end_session)
@@ -54,17 +54,10 @@ Nếu VRAM hết: giảm per_device_train_batch_size=2 trong train_gpu.py.
 Xóa thư mục cũ:  
 rmdir /s /q models\vit5_finetuned_gpu  
 Chạy lại train_gpu.py.  
-
-Hướng dẫn train model (bartpho_summarizer)  
-chạy: python datagen_summarizer.py (tạo 5000 mẫu, có thể tùy chỉnh)  
-rồi chạy: python train_summarizer.py  
-nếu cần train lại:  
-rmdir /s /q models\bartpho_summarizer  
-chạy lại python train_summarizer.py  
  
 Hướng dẫn chạy ứng dụng  
 
-Chạy server FastAPI:Bashuvicorn main_api:app --reloadhoặcBashpython main_api.py  
+Chạy server FastAPI:uvicorn main_api:app --reload hoặc python main_api.py  
 Mở trình duyệt:texthttp://127.0.0.1:8000  
 Sử dụng:  
 Dán toàn bộ nội dung email vào textarea.  
@@ -73,13 +66,12 @@ Kết quả sẽ hiển thị:
 Thông tin trích xuất (JSON) – dù có lỗi parse vẫn hiển thị raw output.  
 Tóm tắt lý do xin nghỉ (ngắn gọn 5–10 từ).  
 
-
-
-Ví dụ input  
-textKính gửi Anh Trưởng phòng,  
+Ví dụ input text  
+Kính gửi Anh Trưởng phòng,  
 Tôi tên là Nguyễn Phú Hùng, mã nhân viên NV001...  
 Lý do xin nghỉ là vì con tôi bị ốm nặng...  
 Kết quả mong đợi  
 
 Trích xuất: employee_name, employee_id, leave_periods  
 Tóm tắt lý do: "con bị ốm nặng" hoặc "chăm sóc con ốm nặng"  
+
