@@ -1,4 +1,3 @@
-# ocr_processor.py
 from vietocr.tool.predictor import Predictor
 from vietocr.tool.config import Cfg
 from PIL import Image
@@ -28,7 +27,6 @@ class OCRProcessor:
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File không tồn tại: {file_path}")
 
-        # ✅ Load ảnh hoặc PDF
         if file_path.lower().endswith('.pdf'):
             images = convert_from_path(file_path)
         else:
