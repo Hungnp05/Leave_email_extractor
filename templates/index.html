@@ -19,9 +19,13 @@
 <body>
     <h1>Trích xuất thông tin nghỉ phép từ email</h1>
     
-    <form action="/" method="post">
-        <label for="email_text">Nội dung email:</label><br>
+    <form action="/" method="post" enctype="multipart/form-data">
+        <label for="email_text">Nội dung email (text):</label><br>
         <textarea id="email_text" name="email_text" placeholder="Dán nội dung email vào đây..."></textarea><br><br>
+
+        <label for="file">Hoặc upload ảnh/PDF scan email:</label><br>
+        <input type="file" id="file" name="file" accept="image/png,image/jpeg,image/jpg,application/pdf"><br><br>
+
         <button type="submit">Trích xuất</button>
     </form>
 

@@ -8,3 +8,5 @@ jinja2
 python-dateutil
 regex
 python-multipart
+torch
+torchvision
