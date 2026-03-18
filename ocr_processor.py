@@ -35,6 +35,7 @@ class OCRProcessor:
             img_np = np.array(img)
 
             result = self.ocr.ocr(img_np)
+
             for line in result:
                 for word_info in line:
                     text = word_info[1][0]
