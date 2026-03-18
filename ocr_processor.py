@@ -1,47 +1,42 @@
-from vietocr.tool.predictor import Predictor
-from vietocr.tool.config import Cfg
-from PIL import Image
+from paddleocr import PaddleOCR
 from pdf2image import convert_from_path
-import torch
+from PIL import Image, ImageEnhance, ImageFilter
+import numpy as np
 import re
 import os
 
 class OCRProcessor:
     def __init__(self):
-        print("[OCR] Initializing VietOCR...")
-
-        config = Cfg.load_config_from_name('vgg_transformer')
-        config['cnn']['pretrained'] = True
-
-        device = 'cuda' if torch.cuda.is_available() else 'cpu'
-        config['device'] = device
-
-        print(f"[OCR] Using device: {device}")
-
-        self.detector = Predictor(config)
-        print("[OCR] VietOCR Ready")
+        self.ocr = PaddleOCR(use_angle_cls=True, lang='vi')
 
     def extract_text(self, file_path: str) -> str:
-        """Hỗ trợ ảnh (png/jpg) và PDF - trả về text ghép"""
-
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File không tồn tại: {file_path}")
 
         if file_path.lower().endswith('.pdf'):
             images = convert_from_path(file_path)
         else:
-            images = [Image.open(file_path).convert("RGB")]
+            images = [Image.open(file_path)]
 
-        full_text = []
-
+        full_text = ""
         for img in images:
-            try:
-                text = self.detector.predict(img)
-                full_text.append(text)
-            except Exception as e:
-                print(f"[OCR ERROR] {e}")
+            img = img.convert('L')
+            enhancer = ImageEnhance.Contrast(img)
+            img = enhancer.enhance(2.5)
+            enhancer = ImageEnhance.Sharpness(img)
+            img = enhancer.enhance(2.0)
+            img = img.filter(ImageFilter.SHARPEN)
+            img = img.filter(ImageFilter.MedianFilter())  # sửa chữ M hoa
 
-        result = " ".join(full_text)
-        result = re.sub(r'\s+', ' ', result).strip()
+            w, h = img.size
+            if w < 1200:
+                img = img.resize((int(w*2.0), int(h*2.0)), Image.LANCZOS)
 
-        return result
+            result = self.ocr.ocr(img)
+            for line in result:
+                for word_info in line:
+                    text = word_info[1][0]
+                    full_text += text + " "
+
+        full_text = re.sub(r'\s+', ' ', full_text).strip()
+        return full_text

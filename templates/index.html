@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Leave Extractor - ViT5 GPU + envit5</title>
+    <title>Leave Extractor - ViT5 GPU + PaddleOCR</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 40px; background: #f9f9f9; line-height: 1.6; }
         h1 { color: #2c3e50; text-align: center; }
@@ -13,7 +13,7 @@
         pre { background: #ecf0f1; padding: 15px; border-radius: 8px; overflow-x: auto; font-size: 14px; white-space: pre-wrap; }
         .error { color: #e74c3c; font-weight: bold; }
         .result-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-top: 20px; }
-        .summary-box { margin-top: 20px; padding: 15px; background: #e8f4f8; border-left: 4px solid #3498db; border-radius: 6px; }
+        .raw-text-box { margin-top: 20px; padding: 15px; background: #f0f8ff; border-left: 4px solid #1e90ff; border-radius: 6px; }
     </style>
 </head>
 <body>
@@ -41,6 +41,13 @@
             <pre>{{ result | tojson(indent=4) }}</pre>
         {% endif %}
     </div>
+
+    {% if raw_text %}
+    <div class="raw-text-box">
+        <h3>Nội dung trích xuất từ ảnh/PDF (OCR):</h3>
+        <pre>{{ raw_text }}</pre>
+    </div>
+    {% endif %}
     {% endif %}
 </body>
 </html>

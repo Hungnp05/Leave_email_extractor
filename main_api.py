@@ -1,3 +1,4 @@
+# main_api.py
 from fastapi import FastAPI, File, UploadFile, Form, Request, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -18,18 +19,12 @@ ocr_processor = None
 @app.on_event("startup")
 def load_models():
     global extractor, ocr_processor
-    print("[Startup] Loading models...")
-
     extractor = LeaveExtractor(model_path="models/vit5_finetuned_gpu")
     ocr_processor = OCRProcessor()
-
-    print("[Startup] Models loaded successfully!")
-
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "result": None})
-
 
 @app.post("/", response_class=HTMLResponse)
 async def extract_from_form(
@@ -74,7 +69,7 @@ async def extract_from_form(
 
         return templates.TemplateResponse(
             "index.html",
-            {"request": request, "result": result}
+            {"request": request, "result": result, "raw_text": raw_text}
         )
 
     except HTTPException as he:
@@ -89,14 +84,12 @@ async def extract_from_form(
             {"request": request, "result": {"error": f"Lỗi xử lý: {str(e)}"}}
         )
 
-
 @app.get("/health")
 async def health_check():
     return {
         "status": "healthy",
         "model_loaded": extractor is not None
     }
-
 
 if __name__ == "__main__":
     uvicorn.run(
