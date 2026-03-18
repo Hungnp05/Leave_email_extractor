@@ -26,7 +26,7 @@ class OCRProcessor:
             enhancer = ImageEnhance.Sharpness(img)
             img = enhancer.enhance(2.0)
             img = img.filter(ImageFilter.SHARPEN)
-            img = img.filter(ImageFilter.MedianFilter())  # sửa chữ M hoa
+            img = img.filter(ImageFilter.MedianFilter())
 
             w, h = img.size
             if w < 1200:
