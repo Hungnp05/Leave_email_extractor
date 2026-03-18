@@ -20,19 +20,21 @@ class OCRProcessor:
 
         full_text = ""
         for img in images:
-            img = img.convert('L')
+            img = img.convert('RGB')
+
             enhancer = ImageEnhance.Contrast(img)
             img = enhancer.enhance(2.5)
             enhancer = ImageEnhance.Sharpness(img)
             img = enhancer.enhance(2.0)
             img = img.filter(ImageFilter.SHARPEN)
-            img = img.filter(ImageFilter.MedianFilter())
 
             w, h = img.size
             if w < 1200:
                 img = img.resize((int(w*2.0), int(h*2.0)), Image.LANCZOS)
 
-            result = self.ocr.ocr(img)
+            img_np = np.array(img)
+
+            result = self.ocr.ocr(img_np)
             for line in result:
                 for word_info in line:
                     text = word_info[1][0]
