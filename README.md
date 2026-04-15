@@ -25,16 +25,17 @@ Video demo: https://www.youtube.com/watch?v=fc7IRGaJ7Xo
 - **Libraries**: Transformers, Torch, PaddleOCR, PDF2Image, Pillow
 
 ## Project Structure
-leave_extractorv2/
-├── data/                          # Training datasets
-├── models/vit5_finetuned_gpu/     # Fine-tuned ViT5 model
-├── templates/index.html           # Web interface
-├── vit5_predict.py                # ViT5 prediction class
-├── ocr_processor.py               # OCR processing with PaddleOCR
-├── preprocess.py                  # Text cleaning
-├── datagen.py                     # Synthetic data generator
-├── train_gpu.py                   # Training script (GPU)
-├── main_api.py                    # FastAPI application
+
+leave_extractorv2/  
+├── data/                          # Training datasets  
+├── models/vit5_finetuned_gpu/     # Fine-tuned ViT5 model  
+├── templates/index.html           # Web interface  
+├── vit5_predict.py                # ViT5 prediction class  
+├── ocr_processor.py               # OCR processing with PaddleOCR  
+├── preprocess.py                  # Text cleaning  
+├── datagen.py                     # Synthetic data generator  
+├── train_gpu.py                   # Training script (GPU)  
+├── main_api.py                    # FastAPI application  
 └── README.md
 
 
