@@ -1,77 +1,79 @@
-# Leave Extractor - Trích xuất thông tin nghỉ phép từ email
+# Leave Extractor Pro
 
-Dự án sử dụng mô hình ngôn ngữ tiếng Việt (ViT5) để trích xuất thông tin nghỉ phép từ email tiếng Việt (tên nhân viên, mã NV, khoảng thời gian nghỉ, ca nghỉ, lý do)
+**Automatic Extraction of Leave Requests from Vietnamese Emails and Scanned Documents**
 
-### Tính năng chính
-- Trích xuất tự động: employee_name, employee_id, leave_periods (start_date, end_date, start_session, end_session)
-- Tóm tắt lý do xin nghỉ phép ngắn gọn từ phần "vì..." trong email
-- Giao diện web đơn giản bằng FastAPI + HTML
-- Hỗ trợ chạy trên GPU (CUDA) hoặc CPU
+A powerful AI system that extracts structured leave information from Vietnamese emails, images, or scanned PDFs, and provides clean, usable JSON output.
 
-### Công nghệ sử dụng
-- **Model trích xuất**: VietAI/vit5-base (fine-tune cho task text-to-text JSON)
-- **Model tóm tắt lý do**: vinai/bartpho-syllable (BART tiếng Việt chuyên tóm tắt)
-- **Framework**: FastAPI, Uvicorn, Jinja2
-- **Thư viện**: transformers, torch, preprocess
+Video demo: https://www.youtube.com/watch?v=fc7IRGaJ7Xo
 
-## Chuẩn bị môi trường
+## Features
 
-### Yêu cầu hệ thống
-- Python 3.8–3.11
-- GPU NVIDIA (khuyến nghị) hoặc CPU (chậm hơn)  
-- Dung lượng RAM: ≥8GB (GPU) hoặc ≥16GB (CPU)  
+- Supports **text**, **images** (PNG/JPG), and **PDF** inputs
+- Accurate **OCR** using PaddleOCR for scanned documents and screenshots
+- Structured information extraction using fine-tuned **ViT5** model
+- Extracts: employee name, employee ID, leave periods (with dates and sessions), and reason
+- Clean and user-friendly web interface
+- GPU acceleration support (CUDA) with automatic CPU fallback
+- Raw OCR text display for verification
 
-### Cài đặt
-1. Clone dự án (hoặc mở thư mục hiện có):  
-   ```bash  
-   git clone <url-repo>  
-   cd leave_extractor  
+## Technology Stack
 
-Tạo môi trường ảo và kích hoạt:  
-python -m venv .venv  
-# Windows  
-.venv\Scripts\activate  
-# Linux/Mac  
-source .venv/bin/activate  
-Cài đặt các thư viện cần thiết:Bashpip install --upgrade pip  
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121  # nếu dùng CUDA 12.1  
-# hoặc CPU: pip install torch torchvision torchaudio  
-pip install transformers datasets accelerate sentencepiece fastapi uvicorn jinja2 python-multipart regex  
-(Tùy chọn) Đăng nhập Hugging Face để tải model nhanh hơn:Bashhuggingface-cli login(dán token từ https://huggingface.co/settings/tokens)  
+- **NLP Model**: `VietAI/vit5-base` (fine-tuned for text-to-JSON)
+- **OCR Engine**: PaddleOCR (with Vietnamese language support)
+- **Backend**: FastAPI + Uvicorn
+- **Frontend**: HTML + Jinja2 Templates
+- **Libraries**: Transformers, Torch, PaddleOCR, PDF2Image, Pillow
 
-Hướng dẫn train model (ViT5 cho trích xuất JSON)  
+## Project Structure
+leave_extractorv2/
+├── data/                          # Training datasets
+├── models/vit5_finetuned_gpu/     # Fine-tuned ViT5 model
+├── templates/index.html           # Web interface
+├── vit5_predict.py                # ViT5 prediction class
+├── ocr_processor.py               # OCR processing with PaddleOCR
+├── preprocess.py                  # Text cleaning
+├── datagen.py                     # Synthetic data generator
+├── train_gpu.py                   # Training script (GPU)
+├── main_api.py                    # FastAPI application
+└── README.md
 
-Tạo dữ liệu huấn luyện (nếu chưa có):python datagen.py→ File data/training_data_phot5.json sẽ được tạo (có thể tùy chỉnh số mẫu trong code).  
-Train model (dùng GPU):python train_gpu.py  
-Train model (dùng CPU):python train.py  
 
-Model sẽ lưu vào thư mục models/vit5_finetuned_gpu.  
+## Installation
 
-Thời gian train: 1–4 giờ tùy GPU (RTX 3060/4070 khoảng 1–2 giờ).  
-Nếu VRAM hết: giảm per_device_train_batch_size=2 trong train_gpu.py.  
+### 1. Create and Activate Virtual Environment
 
-(Tùy chọn) Train lại nếu cần cải thiện:  
-Xóa thư mục cũ:  
-rmdir /s /q models\vit5_finetuned_gpu  
-Chạy lại train_gpu.py.  
- 
-Hướng dẫn chạy ứng dụng  
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# Linux / macOS
+source .venv/bin/activate
 
-Chạy server FastAPI:uvicorn main_api:app --reload hoặc python main_api.py  
-Mở trình duyệt:texthttp://127.0.0.1:8000  
-Sử dụng:  
-Dán toàn bộ nội dung email vào textarea.  
-Nhấn Trích xuất.  
-Kết quả sẽ hiển thị:  
-Thông tin trích xuất (JSON) – dù có lỗi parse vẫn hiển thị raw output.  
-Tóm tắt lý do xin nghỉ (ngắn gọn 5–10 từ).  
 
-Ví dụ input text  
-Kính gửi Anh Trưởng phòng,  
-Tôi tên là Nguyễn Phú Hùng, mã nhân viên NV001...  
-Lý do xin nghỉ là vì con tôi bị ốm nặng...  
-Kết quả mong đợi  
+2. Install Dependencies
+```bash
+pip install --upgrade pip
+pip install paddlepaddle paddleocr pdf2image pillow
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+pip install fastapi uvicorn python-multipart transformers sentencepiece
 
-Trích xuất: employee_name, employee_id, leave_periods  
-Tóm tắt lý do: "con bị ốm nặng" hoặc "chăm sóc con ốm nặng"  
+3. (Optional) Login to Hugging Face
+huggingface-cli login
 
+Training the Model
+- Generate training data:
+```bash
+python datagen.py
+- Train the ViT5 model (recommended on GPU):
+```bash
+python train_gpu.py
+
+The model will be saved in models/vit5_finetuned_gpu/.
+
+
+Running the Application
+```bash
+uvicorn main_api:app --reload
+
+Open your browser and navigate to:
+http://127.0.0.1:8000
